@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formulario 3d</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			html, body {
+				height: 100%;
+				overflow: hidden;
+                font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: -webkit-linear-gradient(-45deg, #0de0cd 0%,#00127c 100%);
+			}
+            .frame{
+                background: rgba(33, 33,33,1);
+                width: 280px;
+                height: 350px;
+                display: flex;
+                flex-direction: column;
+                padding: 10px;   
+                border-radius: 4px;
+                box-shadow: 0px 0px 10px black;
+            }
+            .register{
+                height: 400px;;
+            }
+            .frame label{
+                font-size: 18px;
+                color: rgb(37, 37, 37);
+                -webkit-user-select: none;
+                color: white;
+            }
+            .frame input{
+                font-size: 18px;
+                height: 40px;
+                padding-left: 10px;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                border-radius: 5px;
+                border:none;
+                outline: none;
+                -webkit-transition: all .5s ease;
+            }
+            .frame input:focus{
+                box-shadow: inset 0px 0px 10px black;
+                -webkit-transition: all .5s ease;
+
+            }
+            .frame h2{
+                color: white;
+                -webkit-user-select: none;
+            }
+            .boton{
+                border: none;
+                height: 35px;;
+                margin-top: 20px;
+                border-radius: 15px;
+                outline: none;
+                background: rgba(0, 0, 0, 0.459);
+                color: white;
+                border: 1px solid rgb(83, 83, 83);
+            }
+            .boton:hover{
+                background: rgb(38, 140, 235);
+                color: white;
+                -webkit-transition: all .5s ease;
+            }
+            #creditos{
+                font-size: 30px;
+                color:white;
+                padding-left: 10px;
+                text-shadow: 0px 0px 10px black;
+                -webkit-user-select: none;
+            }
+		
+		</style>
+	</head>
+	<body>
+        <script src="three.js"></script>
+        <script src="OrbitControls.js"></script>
+		<script src="TrackballControls.js"></script>
+        <script src="CSS3DRenderer.js"></script>
+        <script src="tween.min.js"></script>
+        <script src="jquery.js"></script>
+
+        <div id="creditos">Jeancode</div>
+		<div id="container"></div>
+		<script>
+
+
+            $(document).ready(function(){
+
+
+                var camera, scene, renderer,group;
+			    var controls;
+
+                var animation = TWEEN.Easing.Elastic.Out;
+                  //funcion creada j
+                  function map( x,  in_min,  in_max,  out_min,  out_max)
+                  {
+                      return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+                  }
+      
+      
+      
+                  var login = function ( id, x, y, z, ry ) {
+      
+                      var div = document.createElement( 'div' );
+                      div.className  = "frame";
+                      
+                      div.innerHTML = `
+                      <h2>Iniciar sesión </h2>
+                      <label>Usuario</label>
+                      <input type="text" placeholder="Usuario">
+                      <label>Password</label>
+                      <input type="password" placeholder="Password">
+                      <button type="submit" value="Entrar" class="boton">Entrar</button>
+                      <button type="submit" value="Registrar" class="boton" id="registrar" onclick="registrar()">Registrar</button>
+                      `;
+              
+                      var object = new THREE.CSS3DObject( div );
+      
+                      object.position.set( x, y, z );
+                      
+                      object.rotation.y = ry;
+      
+                      return object;
+      
+                  };
+      
+                  var register = function ( id, x, y, z, ry ) {
+      
+                      var div = document.createElement( 'div' );
+                      div.className  = "frame register";
+                      
+                      div.innerHTML = `
+                      <h2>Registrar</h2>
+                      <label>Usuario</label>
+                      <input type="text" placeholder="Usuario">
+                      <label>Usuario</label>
+                      <input type="text" placeholder="Email@hotmail.com">
+                      <label>Nuevo password</label>
+                      <input type="password" placeholder="Password">
+                      <button class="boton">Registrarme</button>
+                      <button type="submit" value="cancelar" class="boton" id="regresar" >Cancelar</button>
+                      `;
+              
+                      var object = new THREE.CSS3DObject( div );
+      
+                      object.position.set( x, y, z );
+                      
+                      object.rotation.y = ry;
+      
+                      return object;
+      
+                  };
+      
+      
+                  init();
+                  animate();
+      
+                  function init() {
+      
+                      var container = document.getElementById( 'container' );
+      
+                      camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
+      
+                      camera.position.set( 0, 0, 800 );
+      
+                      scene = new THREE.Scene();
+      
+                      renderer = new THREE.CSS3DRenderer();
+      
+                      renderer.setSize( window.innerWidth, window.innerHeight );
+      
+                      container.appendChild( renderer.domElement );
+      
+                      group = new THREE.Group();
+                      
+                      group.position.set(0,0,10);
+      
+                      group.add( new login( 'SJOz3qjfQXU', 0, 0, 50, 0 ) );
+                      group.add( new register( 'SJOz3qjfQXU', 0, 0, -50, 3.141516 ) );
+      
+                      //group.add( new Element( 'SJOzasd3qjfQXU', 0, 0,-100, 3.1 ) );
+              
+                      scene.add( group );
+                      
+               
+                      window.addEventListener( 'resize', onWindowResize, false );
+  
+      
+      
+                  }
+             
+      
+                  function onWindowResize() {
+      
+                      camera.aspect = window.innerWidth / window.innerHeight;
+                      camera.updateProjectionMatrix();
+                      renderer.setSize( window.innerWidth, window.innerHeight );
+      
+                  }
+      
+                  function animate() {
+      
+                      requestAnimationFrame( animate );
+                      TWEEN.update();    
+                      renderer.render( scene, camera );
+      
+                  }   
+
+                $("#registrar").click(function(){
+                    new TWEEN.Tween(group.rotation).to( {
+                        y:-3.1}, 2000 )
+                    .easing( animation).start();
+                
+                });
+                $("#regresar").click(function(){
+
+                    new TWEEN.Tween(group.rotation).to( {
+                        y:0}, 2000 )
+                    .easing(animation).start();
+
+                });
+            });
+
+		</script>
+	</body>
+</html>
